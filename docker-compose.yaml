@@ -1,0 +1,81 @@
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: symfony_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/wait-for-mysql.php:/var/www/wait-for-mysql.php
+    ports:
+      - "8001:8000"
+    depends_on:
+      - mysql
+      - phpmyadmin
+    command: >
+      sh -c "
+        php wait-for-mysql.php && \
+        php bin/console doctrine:migrations:migrate --no-interaction && \
+        php bin/console lexik:jwt:generate-keypair --no-interaction && \
+        php -S 0.0.0.0:8000 -t public
+      "
+    networks:
+      - symfony
+
+  mysql:
+    image: mysql:latest
+    container_name: symfony_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: symfony_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: symfony_user
+      MYSQL_PASSWORD: symfony_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306"
+    networks:
+      - symfony
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: symfony_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - symfony
+
+  react:
+    build:
+      context: ./employee_management
+      dockerfile: Dockerfile
+    container_name: react
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./employee_management:/app
+      - /app/node_modules
+    working_dir: /app
+    command: ["npm", "start"]
+    networks:
+      - symfony
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:
+
+networks:
+  symfony:
+    driver: bridge

@@ -1,0 +1,116 @@
+{
+    "info": {
+        "name": "Employee Management API",
+        "description": "API for managing employees, departments, and positions.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8000"
+        }
+    ],
+    "item": [
+        {
+            "name": "Positions",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://ibillboard.com/api/positions",
+                    "host": [
+                        "https://ibillboard.com"
+                    ],
+                    "path": [
+                        "api/positions"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Employees",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/employee",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "employee"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Employee",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"department\": 1,\n    \"position\": 1\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/employee/new",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "employee",
+                        "new"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Edit Employee",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Jane\",\n    \"lastName\": \"Doe\",\n    \"email\": \"jane.doe@example.com\",\n    \"department\": 2,\n    \"position\": 2\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/employee/{id}/edit",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "employee",
+                        "{id}",
+                        "edit"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Delete Employee",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "{{baseUrl}}/employee/{id}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "employee",
+                        "{id}"
+                    ]
+                }
+            }
+        }
+    ]
+}
