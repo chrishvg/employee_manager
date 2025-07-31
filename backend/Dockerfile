@@ -23,7 +23,12 @@ COPY . /var/www
 
 RUN chown -R www:www /var/www
 
+WORKDIR /var/www
+
 USER www
+
+RUN composer clear-cache
+RUN composer install --optimize-autoloader --no-interaction || composer update --optimize-autoloader --no-interaction
 
 EXPOSE 8000
 
